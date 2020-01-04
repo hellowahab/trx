@@ -1,0 +1,6 @@
+D:\OneDrive\My Projects\Trx Framework 2_0_3003_1\Trx\Bin\Examples\C#\Trx.dll.log4net
+D:\OneDrive\My Projects\Trx Framework 2_0_3003_1\Trx\Bin\Examples\C#\ConditionalFormatting.exe
+D:\OneDrive\My Projects\Trx Framework 2_0_3003_1\Trx\Bin\Examples\C#\ConditionalFormatting.pdb
+D:\OneDrive\My Projects\Trx Framework 2_0_3003_1\Trx\Src\Examples\C#\ConditionalFormatting\obj\x86\Debug\ConditionalFormatting.csproj.CoreCompileInputs.cache
+D:\OneDrive\My Projects\Trx Framework 2_0_3003_1\Trx\Src\Examples\C#\ConditionalFormatting\obj\x86\Debug\ConditionalFormatting.exe
+D:\OneDrive\My Projects\Trx Framework 2_0_3003_1\Trx\Src\Examples\C#\ConditionalFormatting\obj\x86\Debug\ConditionalFormatting.pdb

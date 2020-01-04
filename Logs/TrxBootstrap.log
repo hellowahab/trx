@@ -1,0 +1,12 @@
+2017-11-07 16:33:37.521 [1] INFO - Starting Trx Bootstrap version 2.0.3003.1
+2017-11-07 16:33:37.533 [1] INFO - Detected configuration:
+   base config directory is 'D:\OneDrive\My Projects\Trx Framework 2_0_3003_1\Trx\Config'
+   applications using shared base bin folder 'D:\OneDrive\My Projects\Trx Framework 2_0_3003_1\Trx\Bin\'
+   applications NOT reloading on assembly updates in local bin directory
+   detected Trx Server configuration files:
+      D:\OneDrive\My Projects\Trx Framework 2_0_3003_1\Trx\Config\TrxServer.xml
+2017-11-07 16:33:37.791 [1] INFO - Creating Trx Server from config file: D:\OneDrive\My Projects\Trx Framework 2_0_3003_1\Trx\Config\TrxServer.xml
+2017-11-07 16:33:37.910 [1] INFO - Trx Server instance '\\Root' was created (friendly name: Root)
+2017-11-07 16:33:37.910 [1] INFO - Starting Trx Server instance '\\Root'
+2017-11-07 16:33:38.223 [1] INFO - Trx Server instance '\\Root' is started
+2017-11-07 16:33:38.223 [1] INFO - System is now up and running

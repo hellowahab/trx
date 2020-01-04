@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{8F954B9B-1CFC-4C13-ABC8-E74249839AD9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Trx</RootNamespace>
+    <AssemblyName>Trx.Legacy</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Trx.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net">
+      <HintPath>..\..\Lib\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Messaging\BasicMessagesIdentifier.cs" />
+    <Compile Include="Messaging\BcdBinaryEncoder.cs" />
+    <Compile Include="Messaging\BcdStringEncoder.cs" />
+    <Compile Include="Messaging\BcdStringEncoderFactory.cs" />
+    <Compile Include="Messaging\BinaryEncoder.cs" />
+    <Compile Include="Messaging\BinaryEncoderFactory.cs" />
+    <Compile Include="Messaging\Channels\FilterSkeleton.cs" />
+    <Compile Include="Messaging\Channels\FourBytesAsciiHeaderChannel.cs" />
+    <Compile Include="Messaging\Channels\FourBytesNboHeaderChannel.cs" />
+    <Compile Include="Messaging\Channels\FullFourBytesNboHeaderChannel.cs" />
+    <Compile Include="Messaging\Channels\IChannel.cs" />
+    <Compile Include="Messaging\Channels\IFilteredChannel.cs" />
+    <Compile Include="Messaging\Channels\IMessageFilter.cs" />
+    <Compile Include="Messaging\Channels\MessageFilterDecision.cs" />
+    <Compile Include="Messaging\Channels\ReceiveEventArgs.cs" />
+    <Compile Include="Messaging\Channels\TcpChannel.cs" />
+    <Compile Include="Messaging\Channels\TwoBytesNboHeaderChannel.cs" />
+    <Compile Include="Messaging\FlowControl\BasicChannelPool.cs" />
+    <Compile Include="Messaging\FlowControl\BasicServerPeerManager.cs" />
+    <Compile Include="Messaging\FlowControl\ClientPeer.cs" />
+    <Compile Include="Messaging\FlowControl\Forwarder.cs" />
+    <Compile Include="Messaging\FlowControl\IChannelPool.cs" />
+    <Compile Include="Messaging\FlowControl\IListener.cs" />
+    <Compile Include="Messaging\FlowControl\IMessageProcessor.cs" />
+    <Compile Include="Messaging\FlowControl\IMessageSource.cs" />
+    <Compile Include="Messaging\FlowControl\IServerPeerManager.cs" />
+    <Compile Include="Messaging\FlowControl\ListenerCollection.cs" />
+    <Compile Include="Messaging\FlowControl\ListenerConnectedEventArgs.cs" />
+    <Compile Include="Messaging\FlowControl\ListenerConnectionRequestEventArgs.cs" />
+    <Compile Include="Messaging\FlowControl\ListenerPeer.cs" />
+    <Compile Include="Messaging\FlowControl\Peer.cs" />
+    <Compile Include="Messaging\FlowControl\PeerCollection.cs" />
+    <Compile Include="Messaging\FlowControl\PeerRequest.cs" />
+    <Compile Include="Messaging\FlowControl\PeerRequestCancelledEventArgs.cs" />
+    <Compile Include="Messaging\FlowControl\PeerRequestDoneEventArgs.cs" />
+    <Compile Include="Messaging\FlowControl\Server.cs" />
+    <Compile Include="Messaging\FlowControl\ServerCollection.cs" />
+    <Compile Include="Messaging\FlowControl\ServerPeer.cs" />
+    <Compile Include="Messaging\FlowControl\ServerPeerCollection.cs" />
+    <Compile Include="Messaging\FlowControl\ServerPeerConnectedEventArgs.cs" />
+    <Compile Include="Messaging\FlowControl\ServerPeerDisconnectedEventArgs.cs" />
+    <Compile Include="Messaging\FlowControl\TcpListener.cs" />
+    <Compile Include="Messaging\HexadecimalBinaryEncoder.cs" />
+    <Compile Include="Messaging\HexadecimalBinaryEncoderFactory.cs" />
+    <Compile Include="Messaging\HexadecimalStringEncoder.cs" />
+    <Compile Include="Messaging\HexadecimalStringEncoderFactory.cs" />
+    <Compile Include="Messaging\IBinaryEncoder.cs" />
+    <Compile Include="Messaging\IBinaryEncoderFactory.cs" />
+    <Compile Include="Messaging\IMessagesIdentifier.cs" />
+    <Compile Include="Messaging\Iso8583\Iso8583Ascii1987MessageFormatter.cs" />
+    <Compile Include="Messaging\Iso8583\Iso8583Ascii1993MessageFormatter.cs" />
+    <Compile Include="Messaging\Iso8583\Iso8583Bin1987MessageFormatter.cs" />
+    <Compile Include="Messaging\Iso8583\Iso8583Bin1993MessageFormatter.cs" />
+    <Compile Include="Messaging\IStringEncoder.cs" />
+    <Compile Include="Messaging\IStringEncoderFactory.cs" />
+    <Compile Include="Messaging\StringEncoder.cs" />
+    <Compile Include="Messaging\StringEncoderFactory.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\ErrorEventArgs.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Trx.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Framework\Trx.csproj">
+      <Project>{CFDCCA9A-3D3F-4404-BC80-08A1EEF045B9}</Project>
+      <Name>Trx</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

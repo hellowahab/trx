@@ -1,0 +1,1877 @@
+<TrxFramework Type="Trx.Messaging.Iso8583.Iso8583FormatterDefinition" xmlns="Trx.Messaging, Trx" xmlns:utils="Trx.Utilities, Trx">
+  
+  <Property Name="Description" Value="ISO 8583-1987 binary message formatter" />
+
+  <Declare Name="DataEncoderFactory" Type="DataEncoderFactory" />
+
+  <Property Name="MessageTypeIdentifierFormatter" Type="StringFieldFormatterFactory">
+    <Property Name="FieldNumber" Value="-1" />
+    <Property Name="Description" Value="Message type identifier" />
+    <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+    <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+      <Property Name="Length" Value="4" />
+    </Property>
+    <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+      <Property Name="RemovePad" Value="true" />
+    </Property>
+  </Property>
+
+  <Property Name="MessageSecuritySchema" Type="MessageSecuritySchema">
+    <!-- Add field logging restrictions -->
+    <Property Name="RestrictedLogFields">
+      <Declare Name="CardDataObfuscator" Type="CardDataObfuscator" />
+
+      <!-- PAN -->
+      <Invoke Name="Add">
+        <Parameter Type="RestrictedLogField">
+          <Constructor>
+            <Parameter Type="int" Value="2" />
+            <Parameter Type="CardDataObfuscator" Reference="CardDataObfuscator" />
+          </Constructor>
+        </Parameter>
+      </Invoke>
+
+      <!-- Expiration date -->
+      <Invoke Name="Add">
+        <Parameter Type="RestrictedLogField">
+          <Constructor>
+            <Parameter Type="int" Value="14" />
+            <Parameter Type="CardDataObfuscator" Reference="CardDataObfuscator" />
+          </Constructor>
+        </Parameter>
+      </Invoke>
+
+      <!-- Track 2 -->
+      <Invoke Name="Add">
+        <Parameter Type="RestrictedLogField">
+          <Constructor>
+            <Parameter Type="int" Value="35" />
+            <Parameter Type="CardDataObfuscator" Reference="CardDataObfuscator" />
+          </Constructor>
+        </Parameter>
+      </Invoke>
+
+      <!-- Track 1 -->
+      <Invoke Name="Add">
+        <Parameter Type="RestrictedLogField">
+          <Constructor>
+            <Parameter Type="int" Value="45" />
+            <Parameter Type="CardDataObfuscator" Reference="CardDataObfuscator" />
+          </Constructor>
+        </Parameter>
+      </Invoke>
+
+      <!-- Personal identification number (PIN) data -->
+      <Invoke Name="Add">
+        <Parameter Type="RestrictedLogField">
+          <Constructor>
+            <Parameter Type="int" Value="52" />
+          </Constructor>
+        </Parameter>
+      </Invoke>
+
+      <!-- Message security code -->
+      <Invoke Name="Add">
+        <Parameter Type="RestrictedLogField">
+          <Constructor>
+            <Parameter Type="int" Value="96" />
+          </Constructor>
+        </Parameter>
+      </Invoke>
+    </Property>
+  </Property>
+
+  <Declare Name="BcdLengthEncoderFactory" Type="BcdLengthEncoderFactory" />
+  <Declare Name="BcdDataEncoderFactory_LeftPadded" Type="BcdDataEncoderFactory">
+    <Property Name="LeftPadded" Value="true" />
+    <Property Name="Pad" Value="0" />
+  </Declare>
+  <Declare Name="BcdDataEncoderFactory_RightPadded" Type="BcdDataEncoderFactory">
+    <Property Name="LeftPadded" Value="false" />
+    <Property Name="Pad" Value="0" />
+  </Declare>
+
+  <Property Name="FieldsFormattersFactories">
+    <!-- Add first bitmap -->
+    <Invoke Name="Add">
+      <Parameter Type="BitMapFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="0" />
+        <Property Name="Description" Value="Primary bitmap" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LowerFieldNumber" Value="1" />
+        <Property Name="UpperFieldNumber" Value="64" />
+      </Parameter>
+    </Invoke>
+ 
+    <!-- Add secondary bitmap (field number 1) -->
+    <Invoke Name="Add">
+      <Parameter Type="BitMapFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="1" />
+        <Property Name="Description" Value="Secondary bitmap" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LowerFieldNumber" Value="65" />
+        <Property Name="UpperFieldNumber" Value="128" />
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 2 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="2" />
+        <Property Name="Description" Value="Primary account number" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_RightPadded" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="19" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+        <Property Name="Validator" Type="NumericValidatorFactory" />
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 3 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="3" />
+        <Property Name="Description" Value="Processing code" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="6" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory" />
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 4 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="4" />
+        <Property Name="Description" Value="Transaction amount" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="12" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 5 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="5" />
+        <Property Name="Description" Value="Reconciliation amount" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="12" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 6 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="6" />
+        <Property Name="Description" Value="Cardholder billing amount" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="12" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 7 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="7" />
+        <Property Name="Description" Value="Transmission date and time" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="10" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory" />
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 8 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="8" />
+        <Property Name="Description" Value="Cardholder billing fee amount" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="8" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 9 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="9" />
+        <Property Name="Description" Value="Reconciliation conversion rate" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="8" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 10 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="10" />
+        <Property Name="Description" Value="Cardholder billing conversion rate" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="8" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 11 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="11" />
+        <Property Name="Description" Value="Systems trace audit number" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="6" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 12 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="12" />
+        <Property Name="Description" Value="Local transaction time" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="6" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory" />
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 13 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="13" />
+        <Property Name="Description" Value="Local transaction date" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="4" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory" />
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 14 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="14" />
+        <Property Name="Description" Value="Expiration date" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="4" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory" />
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 15 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="15" />
+        <Property Name="Description" Value="Settlement date" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="4" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory" />
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 16 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="16" />
+        <Property Name="Description" Value="Conversion date" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="4" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory" />
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 17 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="17" />
+        <Property Name="Description" Value="Capture date" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="4" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory" />
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 18 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="18" />
+        <Property Name="Description" Value="Merchant type" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="4" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 19 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="19" />
+        <Property Name="Description" Value="Acquiring institution country code" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="3" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 20 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="20" />
+        <Property Name="Description" Value="Primary account number country code" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="3" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 21 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="21" />
+        <Property Name="Description" Value="Forwarding institution country code" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="3" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 22 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="22" />
+        <Property Name="Description" Value="Point of service record mode" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="3" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory" />
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 23 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="23" />
+        <Property Name="Description" Value="Card sequence number" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="3" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 24 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="24" />
+        <Property Name="Description" Value="Network international identifier" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="3" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 25 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="25" />
+        <Property Name="Description" Value="Point of service condition code" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="2" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory" />
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 26 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="26" />
+        <Property Name="Description" Value="Point of service PIN capture code" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="2" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory" />
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 27 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="27" />
+        <Property Name="Description" Value="Authorization Identification response length" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="1" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 28 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="28" />
+        <Property Name="Description" Value="Transaction fee amount" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="9" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 29 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="29" />
+        <Property Name="Description" Value="Settlement fee amount" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="9" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 30 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="30" />
+        <Property Name="Description" Value="Transaction processing fee amount" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="9" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 31 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="31" />
+        <Property Name="Description" Value="Settlement processing fee amount" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="9" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 32 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="32" />
+        <Property Name="Description" Value="Acquirer institution identification code" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_RightPadded" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="11" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+        <Property Name="Validator" Type="NumericValidatorFactory" />
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 33 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="33" />
+        <Property Name="Description" Value="Forwarding institution identification code" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_RightPadded" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="11" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+        <Property Name="Validator" Type="NumericValidatorFactory" />
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 34 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="34" />
+        <Property Name="Description" Value="Extended primary account number" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="28" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 35 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="35" />
+        <Property Name="Description" Value="Track 2 data" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_RightPadded" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="37" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 36 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="36" />
+        <Property Name="Description" Value="Track 3 data" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="104" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 37 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="37" />
+        <Property Name="Description" Value="Retrieval reference number" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="12" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 38 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="38" />
+        <Property Name="Description" Value="Authorization identification response" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="6" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 39 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="39" />
+        <Property Name="Description" Value="Response code" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="2" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 40 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="40" />
+        <Property Name="Description" Value="Service restriction code" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="3" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 41 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="41" />
+        <Property Name="Description" Value="Card acceptor terminal identification" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="8" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 42 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="42" />
+        <Property Name="Description" Value="Card acceptor identification code" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="15" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 43 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="43" />
+        <Property Name="Description" Value="Card acceptor name/location" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="40" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 44 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="44" />
+        <Property Name="Description" Value="Additional response data" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="25" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 45 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="45" />
+        <Property Name="Description" Value="Track 1 data" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="76" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 46 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="46" />
+        <Property Name="Description" Value="Additional data - ISO" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 47 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="47" />
+        <Property Name="Description" Value="Additional data - national" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 48 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="48" />
+        <Property Name="Description" Value="Additional data - private" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 49 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="49" />
+        <Property Name="Description" Value="Transaction currency code" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="3" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 50 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="50" />
+        <Property Name="Description" Value="Reconciliation currency code" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="3" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 51 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="51" />
+        <Property Name="Description" Value="Cardholder billing currency code" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="3" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 52 -->
+    <Invoke Name="Add">
+      <Parameter Type="BinaryFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="52" />
+        <Property Name="Description" Value="Personal identification number (PIN) data" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="8" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 53 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="53" />
+        <Property Name="Description" Value="Security related control information" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="16" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory" />
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 54 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="54" />
+        <Property Name="Description" Value="Amounts, additional" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="120" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 55 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="55" />
+        <Property Name="Description" Value="Reserved for ISO use" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 56 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="56" />
+        <Property Name="Description" Value="Reserved for ISO use" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 57 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="57" />
+        <Property Name="Description" Value="Reserved for national use" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 58 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="58" />
+        <Property Name="Description" Value="Reserved for national use" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 59 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="59" />
+        <Property Name="Description" Value="Reserved for national use" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 60 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="60" />
+        <Property Name="Description" Value="Reserved for private use" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 61 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="61" />
+        <Property Name="Description" Value="Reserved for private use" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 62 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="62" />
+        <Property Name="Description" Value="Reserved for private use" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 63 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="63" />
+        <Property Name="Description" Value="Reserved for private use" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 64 -->
+    <Invoke Name="Add">
+      <Parameter Type="BinaryFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="64" />
+        <Property Name="Description" Value="Message authentication code" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="8" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 65 -->
+    <Invoke Name="Add">
+      <Parameter Type="BinaryFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="65" />
+        <Property Name="Description" Value="Reserved for ISO use" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="8" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 66 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="66" />
+        <Property Name="Description" Value="Settlement code" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="1" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory" />
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 67 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="67" />
+        <Property Name="Description" Value="Extended payment data" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="2" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory" />
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 68 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="68" />
+        <Property Name="Description" Value="Receiving institution country code" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="3" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 69 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="69" />
+        <Property Name="Description" Value="Settlement institution country code" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="3" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 70 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="70" />
+        <Property Name="Description" Value="Network management information code" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="3" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory" />
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 71 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="71" />
+        <Property Name="Description" Value="Message number" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="4" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 72 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="72" />
+        <Property Name="Description" Value="Last message number" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="4" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 73 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="73" />
+        <Property Name="Description" Value="Action date" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="6" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory" />
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 74 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="74" />
+        <Property Name="Description" Value="Credits, number" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="10" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 75 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="75" />
+        <Property Name="Description" Value="Credits, reversal number" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="10" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 76 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="76" />
+        <Property Name="Description" Value="Debits, number" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="10" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 77 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="77" />
+        <Property Name="Description" Value="Debits, reversal number" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="10" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 78 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="78" />
+        <Property Name="Description" Value="Transfer, number" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="10" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 79 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="79" />
+        <Property Name="Description" Value="Transfer, reversal number" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="10" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 80 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="80" />
+        <Property Name="Description" Value="Inquiries, number" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="10" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 81 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="81" />
+        <Property Name="Description" Value="Authorizations, number" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="10" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 82 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="82" />
+        <Property Name="Description" Value="Credits, processing fee amount" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="12" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 83 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="83" />
+        <Property Name="Description" Value="Credits, transaction fee amount" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="12" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 84 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="84" />
+        <Property Name="Description" Value="Debits, processing fee amount" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="12" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 85 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="85" />
+        <Property Name="Description" Value="Debits, transaction fee amount" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="12" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 86 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="86" />
+        <Property Name="Description" Value="Credits, amount" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="12" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 87 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="87" />
+        <Property Name="Description" Value="Credits, reversal amount" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="12" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 88 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="88" />
+        <Property Name="Description" Value="Debits, amount" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="12" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 89 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="89" />
+        <Property Name="Description" Value="Debits, reversal amount" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="12" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory">
+          <Property Name="RemovePad" Value="true" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 90 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="90" />
+        <Property Name="Description" Value="Original Data Elements" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="42" />
+        </Property>
+        <Property Name="Padding" utils:Type="ZeroPaddingLeftFactory" />
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 91 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="91" />
+        <Property Name="Description" Value="File update code" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="1" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 92 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="92" />
+        <Property Name="Description" Value="File security code" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="2" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 93 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="93" />
+        <Property Name="Description" Value="Response indicator" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="6" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 94 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="94" />
+        <Property Name="Description" Value="Service indicator" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="7" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 95 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="95" />
+        <Property Name="Description" Value="Replacement amounts" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="42" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 96 -->
+    <Invoke Name="Add">
+      <Parameter Type="BinaryFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="96" />
+        <Property Name="Description" Value="Message security code" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="16" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 97 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="97" />
+        <Property Name="Description" Value="Amount, net settlement" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_LeftPadded" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="17" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 98 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="98" />
+        <Property Name="Description" Value="Payee" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="25" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 99 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="99" />
+        <Property Name="Description" Value="Settlement institution Id code" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_RightPadded" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="11" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+        <Property Name="Validator" Type="NumericValidatorFactory" />
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 100 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="100" />
+        <Property Name="Description" Value="Receiving institution Id code" />
+        <Property Name="Encoder" Reference="BcdDataEncoderFactory_RightPadded" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="11" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+        <Property Name="Validator" Type="NumericValidatorFactory" />
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 101 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="101" />
+        <Property Name="Description" Value="File name" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="17" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 102 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="102" />
+        <Property Name="Description" Value="Account identification 1" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="28" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 103 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="103" />
+        <Property Name="Description" Value="Account identification 2" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="28" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 104 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="104" />
+        <Property Name="Description" Value="Transaction description" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="100" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 105 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="105" />
+        <Property Name="Description" Value="Reserved for ISO use" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 106 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="106" />
+        <Property Name="Description" Value="Reserved for ISO use" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 107 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="107" />
+        <Property Name="Description" Value="Reserved for ISO use" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 108 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="108" />
+        <Property Name="Description" Value="Reserved for ISO use" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 109 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="109" />
+        <Property Name="Description" Value="Reserved for ISO use" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 110 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="110" />
+        <Property Name="Description" Value="Reserved for ISO use" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 111 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="111" />
+        <Property Name="Description" Value="Reserved for ISO use" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 112 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="112" />
+        <Property Name="Description" Value="Reserved for national use" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 113 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="113" />
+        <Property Name="Description" Value="Reserved for national use" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 114 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="114" />
+        <Property Name="Description" Value="Reserved for national use" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 115 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="115" />
+        <Property Name="Description" Value="Reserved for national use" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 116 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="116" />
+        <Property Name="Description" Value="Reserved for national use" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 117 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="117" />
+        <Property Name="Description" Value="Reserved for national use" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 118 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="118" />
+        <Property Name="Description" Value="Reserved for national use" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 119 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="119" />
+        <Property Name="Description" Value="Reserved for national use" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 120 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="120" />
+        <Property Name="Description" Value="Reserved for private use" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 121 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="121" />
+        <Property Name="Description" Value="Reserved for private use" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 122 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="122" />
+        <Property Name="Description" Value="Reserved for private use" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 123 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="123" />
+        <Property Name="Description" Value="Reserved for private use" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 124 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="124" />
+        <Property Name="Description" Value="Reserved for private use" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 125 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="125" />
+        <Property Name="Description" Value="Reserved for private use" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 126 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="126" />
+        <Property Name="Description" Value="Reserved for private use" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 127 -->
+    <Invoke Name="Add">
+      <Parameter Type="StringFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="127" />
+        <Property Name="Description" Value="Reserved for private use" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="VariableLengthManagerFactory">
+          <Property Name="MinimumLength" Value="0" />
+          <Property Name="MaximumLength" Value="999" />
+          <Property Name="LengthEncoder" Reference="BcdLengthEncoderFactory" />
+        </Property>
+      </Parameter>
+    </Invoke>
+
+    <!-- Add field number 128 -->
+    <Invoke Name="Add">
+      <Parameter Type="BinaryFieldFormatterFactory">
+        <Property Name="FieldNumber" Value="128" />
+        <Property Name="Description" Value="Message authentication code" />
+        <Property Name="Encoder" Reference="DataEncoderFactory" />
+        <Property Name="LengthManager" Type="FixedLengthManagerFactory">
+          <Property Name="Length" Value="8" />
+        </Property>
+      </Parameter>
+    </Invoke>
+  </Property>
+</TrxFramework>

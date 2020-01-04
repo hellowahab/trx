@@ -1,0 +1,195 @@
+%{
+using System;
+
+using System.Runtime.Serialization;
+
+namespace Trx.Messaging.ConditionalFormatting {
+
+public class SemanticParser {
+	
+%}
+
+%token Error			// This is used not by the parser, but by the tokenizer; do not remove.
+%token Or
+%token And
+%token Not
+%token EqualsOperator
+%token LeftParenthesis
+%token RightParenthesis
+%token Natural
+%token Parent
+%token StringConstant
+%token BinaryConstant
+%token IdentificatorSeparator
+%token LeftSquareBracket
+%token RightSquareBracket
+%token ParameterSeparator
+%token IsSet
+
+%left Or
+%left And
+%left Not
+%left EqualsOperator
+
+%start LogicalExpression
+
+%%
+
+// Logical expressions.
+LogicalExpression
+	: LogicalExpression Or LogicalExpression
+	  {
+		$$ = new ConditionalOrOperator( $1 as IBooleanExpression, $3 as IBooleanExpression);
+	  }
+	| LogicalExpression And LogicalExpression
+	  {
+		$$ = new ConditionalAndOperator( $1 as IBooleanExpression, $3 as IBooleanExpression);
+	  }
+	| Not LogicalExpression
+	  {
+		$$ = new NegationOperator( $2 as IBooleanExpression);
+	  }
+	| LogicalFactor
+	;
+
+LogicalFactor
+	: LeftParenthesis LogicalExpression RightParenthesis
+	  {
+		$$ = $2;
+	  }
+	| IsSetExpression
+	| RelationalExpression
+	;
+
+// Relational expressions.
+RelationalExpression
+	: EqualsExpression
+	;
+
+EqualsExpression
+	: FieldExpression EqualsOperator StringExpression
+	  {
+		$$ = new FieldValueEqualsStringOperator( $1 as IMessageExpression,
+			$3 as StringConstantExpression );
+	  }
+	| FieldExpression LeftSquareBracket Natural ParameterSeparator Natural RightSquareBracket EqualsOperator StringExpression
+	  {
+		$$ = new MidEqualsStringOperator( $1 as IMessageExpression,
+			$8 as StringConstantExpression, ( int )$3,  ( int )$5 );
+	  }
+	| FieldExpression EqualsOperator BinaryExpression
+	  {
+		$$ = new FieldValueEqualsBinaryOperator( $1 as IMessageExpression,
+			$3 as BinaryConstantExpression );
+	  }
+	| FieldExpression LeftSquareBracket Natural ParameterSeparator Natural RightSquareBracket EqualsOperator BinaryExpression
+	  {
+		$$ = new MidEqualsBinaryOperator( $1 as IMessageExpression,
+			$8 as BinaryConstantExpression, ( int )$3,  ( int )$5 );
+	  }
+	| MtiExpression EqualsOperator Natural
+	  {
+		$$ = new MtiEqualsExpression( ( int )$3, $1 as IMessageExpression );
+	  }
+	;
+	
+// Field expression
+FieldExpression
+	: Natural
+	  {
+		$$ = new MessageExpression( ( int )$1 );
+	  }
+	| SubFieldFactor
+	| ParentFactor
+	;
+
+// Mti expression
+MtiExpression
+	: Mti
+	  {
+		$$ = new MessageExpression();
+	  }
+	| SubMtiFactor
+	| ParentMtiFactor
+	;
+
+SubMtiFactor
+	: Natural IdentificatorSeparator Mti
+	  {
+		$$ = new SubMessageExpression( ( int )$1, new MessageExpression() );
+	  }
+	| Natural IdentificatorSeparator SubMtiFactor
+	  {
+		$$ = new SubMessageExpression( ( int )$1, $3 as SubMessageExpression );
+	  }
+	;
+
+ParentMtiFactor
+	: Parent IdentificatorSeparator Mti
+	  {
+		$$ = new ParentMessageExpression( new MessageExpression() );
+	  }
+	| Parent IdentificatorSeparator SubMtiFactor
+	  {
+		$$ = new ParentMessageExpression( $3 as SubMessageExpression );
+	  }
+	| Parent IdentificatorSeparator ParentMtiFactor
+	  {
+		$$ = new ParentMessageExpression( $3 as ParentMessageExpression );
+	  }
+	;
+
+// IsSet expression
+IsSetExpression
+	: IsSet LeftParenthesis Natural RightParenthesis
+	  {
+		$$ = new IsSetExpression( new MessageExpression( ( int )$3 ) );
+	  }
+	| IsSet LeftParenthesis SubFieldFactor RightParenthesis
+	  {
+		$$ = new IsSetExpression( $3 as SubMessageExpression );
+	  }
+	| IsSet LeftParenthesis ParentFactor RightParenthesis
+	  {
+		$$ = new IsSetExpression( $3 as ParentMessageExpression );
+	  }
+	;
+
+SubFieldFactor
+	: Natural IdentificatorSeparator Natural
+	  {
+		$$ = new SubMessageExpression( ( int )$1, new MessageExpression( ( int )$3 ) );
+	  }
+	| Natural IdentificatorSeparator SubFieldFactor
+	  {
+		$$ = new SubMessageExpression( ( int )$1, $3 as SubMessageExpression );
+	  }
+	;
+
+ParentFactor
+	: Parent IdentificatorSeparator Natural
+	  {
+		$$ = new ParentMessageExpression( new MessageExpression( ( int )$3 ) );
+	  }
+	| Parent IdentificatorSeparator SubFieldFactor
+	  {
+		$$ = new ParentMessageExpression( $3 as SubMessageExpression );
+	  }
+	| Parent IdentificatorSeparator ParentFactor
+	  {
+		$$ = new ParentMessageExpression( $3 as ParentMessageExpression );
+	  }
+	;
+
+// String expressions.
+StringExpression
+	: StringConstant
+	;
+
+// Binary expressions.
+BinaryExpression
+	: BinaryConstant
+	;
+
+%%
+}

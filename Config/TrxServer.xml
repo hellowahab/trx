@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TrxFramework Type="TrxServer" xmlns="Trx.Server, Trx" xmlns:log="Trx.Logging, Trx">
+  <Property Name="Name" Value="Root" />
+  <Property Name="LoggerFactory" log:Type="Log4NetLoggerFactory">
+    <Property Name="ConfigFile" Value="TrxServer.log4net" />
+  </Property>
+  <Property Name="LoggerRenderer" log:Type="Renderer" />
+  <Property Name="ServicesProvider" Type="FileBasedServicesProvider" />
+  <Property Name="TupleSpaces">
+    <Invoke Name="Add">
+      <Parameter Type="TrxServerTupleSpace">
+        <Property Name="Name" Value="InputPortsTupleSpace" />
+      </Parameter>
+    </Invoke>
+  </Property>
+</TrxFramework>        

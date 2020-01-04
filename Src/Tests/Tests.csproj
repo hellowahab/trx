@@ -1,0 +1,171 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{E874A17F-3EA2-490D-BD3E-2CA0177E24C5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Tests.Trx</RootNamespace>
+    <AssemblyName>Tests.Trx</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Trx.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net">
+      <HintPath>..\..\Lib\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\..\Lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Buffer\SingleChunkBufferTest.cs" />
+    <Compile Include="Buffer\TestingSingleChunkBuffer.cs" />
+    <Compile Include="Communication\Channels\ChannelEventTest.cs" />
+    <Compile Include="Communication\Channels\ChannelExceptionText.cs" />
+    <Compile Include="Communication\Channels\ChannelRequestCtrlTest.cs" />
+    <Compile Include="Communication\Channels\ConnectionRequestChannelEventTest.cs" />
+    <Compile Include="Communication\Channels\Local\LocalClientChannelTest.cs" />
+    <Compile Include="Communication\Channels\Local\LocalServerChannelTest.cs" />
+    <Compile Include="Communication\Channels\Local\LocalServerChildChannelTest.cs" />
+    <Compile Include="Communication\Channels\Local\LocalServerRegistryTest.cs" />
+    <Compile Include="Communication\Channels\MessagesIdentifierMock.cs" />
+    <Compile Include="Communication\Channels\PipelineContextTest.cs" />
+    <Compile Include="Communication\Channels\PipelineTest.cs" />
+    <Compile Include="Communication\Channels\ReceiveDescriptorTest.cs" />
+    <Compile Include="Communication\Channels\RequestTest.cs" />
+    <Compile Include="Communication\Channels\SendSyncRequestCtrlTest.cs" />
+    <Compile Include="Communication\Channels\SinkMock.cs" />
+    <Compile Include="Communication\Channels\ConnectionRequestSinkMock.cs" />
+    <Compile Include="Communication\Channels\Tcp\TcpBaseSenderReceiverChannelTest.cs" />
+    <Compile Include="Communication\Channels\Tcp\TcpClientChannelTest.cs" />
+    <Compile Include="Communication\Channels\Tcp\TcpServerChannelTest.cs" />
+    <Compile Include="Coordination\TupleSpace\HeapQueueContextTest.cs" />
+    <Compile Include="DummyConsumer.cs" />
+    <Compile Include="DummyProducer.cs" />
+    <Compile Include="Messaging\BasicMessageFormatterBaseTest.cs" />
+    <Compile Include="Messaging\BasicMessageFormatterTest.cs" />
+    <Compile Include="Messaging\BasicMessageFormatterTestConfig.cs" />
+    <Compile Include="Messaging\BcdBinaryEncoderTest.cs" />
+    <Compile Include="Messaging\BcdDataEncoderTest.cs" />
+    <Compile Include="Messaging\BcdLengthEncoderTest.cs" />
+    <Compile Include="Messaging\BcdStringEncoderTest.cs" />
+    <Compile Include="Messaging\BinaryEncoderTest.cs" />
+    <Compile Include="Messaging\BinaryFieldFormatterTest.cs" />
+    <Compile Include="Messaging\BinaryFieldTest.cs" />
+    <Compile Include="Messaging\BitMapFieldFormatterTest.cs" />
+    <Compile Include="Messaging\BitMapFieldTest.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\BinaryConstantExpressionTest.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\ConditionalAndOperatorTest.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\ConditionalFieldFormatterTest.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\ConditionalOrOperatorTest.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\FieldValueEqualsBinaryOperatorTest.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\FieldValueEqualsStringOperatorTest.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\IsSetExpressionTest.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\MessageExpressionTest.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\MessagesProvider.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\MidEqualsBinaryOperatorTest.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\MidEqualsStringOperatorTest.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\MockBooleanExpression.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\MockConditionalFieldEvaluator.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\MockFieldFormatter.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\MtiEqualsExpressionTest.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\NegationOperatorTest.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\ParentMessageExpressionTest.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\SemanticParserTest.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\StringConstantExpressionTest.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\SubMessageExpressionTest.cs" />
+    <Compile Include="Messaging\DataEncoderTest.cs" />
+    <Compile Include="Messaging\FieldAttributeTest.cs" />
+    <Compile Include="Messaging\FieldCollectionTest.cs" />
+    <Compile Include="Messaging\FieldFormatterCollectionTest.cs" />
+    <Compile Include="Messaging\FieldFormatterEventArgsTest.cs" />
+    <Compile Include="Messaging\FixedLengthManagerTest.cs" />
+    <Compile Include="Messaging\FormatterContextTest.cs" />
+    <Compile Include="Messaging\HexadecimalBinaryEncoderTest.cs" />
+    <Compile Include="Messaging\HexDataEncoderTest.cs" />
+    <Compile Include="Messaging\InnerMessageFieldFormatterTest.cs" />
+    <Compile Include="Messaging\InnerMessageFieldTest.cs" />
+    <Compile Include="Messaging\Iso8583\Iso8583MessageFormatterBaseTest.cs" />
+    <Compile Include="Messaging\Iso8583\Iso8583MessageFormatterTest.cs" />
+    <Compile Include="Messaging\Iso8583\Iso8583MessageFormatterTestConfig.cs" />
+    <Compile Include="Messaging\Iso8583\Iso8583MessageTest.cs" />
+    <Compile Include="Messaging\Iso8583\XmlIso8583MessageFormatterTest.cs" />
+    <Compile Include="Messaging\MessageTest.cs" />
+    <Compile Include="Messaging\NboLengthEncoderTest.cs" />
+    <Compile Include="Messaging\NumericValidator.cs" />
+    <Compile Include="Messaging\ParserContextTest.cs" />
+    <Compile Include="Messaging\SelfAnnouncedBinaryFieldFormatterTest.cs" />
+    <Compile Include="Messaging\SelfAnnouncedStringFieldFormatterTest.cs" />
+    <Compile Include="Messaging\StringEncoderTest.cs" />
+    <Compile Include="Messaging\StringFieldFormatterTest.cs" />
+    <Compile Include="Messaging\StringFieldTest.cs" />
+    <Compile Include="Messaging\StringLengthEncoderTest.cs" />
+    <Compile Include="Messaging\StringMessageHeaderFormatterTest.cs" />
+    <Compile Include="Messaging\StringMessageHeaderTest.cs" />
+    <Compile Include="Messaging\VariableLengthManagerTest.cs" />
+    <Compile Include="Messaging\XmlMessageFormatterTest.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SetUpClass.cs" />
+    <Compile Include="Utilities\SpacePaddingLeftTest.cs" />
+    <Compile Include="Utilities\SpacePaddingRightTest.cs" />
+    <Compile Include="Utilities\ZeroPaddingLeftTest.cs" />
+    <Compile Include="Utilities\ZeroPaddingRightTest.cs" />
+    <Compile Include="Utilities\Dom2Obj\DigesterTest.cs" />
+    <Compile Include="Utilities\Dom2Obj\SimpleObject.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Framework\Trx.csproj">
+      <Project>{CFDCCA9A-3D3F-4404-BC80-08A1EEF045B9}</Project>
+      <Name>Trx</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Legacy\Trx.Legacy.csproj">
+      <Project>{8F954B9B-1CFC-4C13-ABC8-E74249839AD9}</Project>
+      <Name>Trx.Legacy</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Trx.snk" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

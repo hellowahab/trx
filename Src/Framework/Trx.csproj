@@ -1,0 +1,317 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{CFDCCA9A-3D3F-4404-BC80-08A1EEF045B9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Trx</RootNamespace>
+    <AssemblyName>Trx</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Trx.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net, Version=1.2.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Lib\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Buffer\BufferFactory.cs" />
+    <Compile Include="Buffer\BufferSecureArea.cs" />
+    <Compile Include="Buffer\IBuffer.cs" />
+    <Compile Include="Buffer\IChunkManager.cs" />
+    <Compile Include="Buffer\NonDisposableSimpleBuffer.cs" />
+    <Compile Include="Buffer\SingleChunkBuffer.cs" />
+    <Compile Include="Buffer\SingleChunkBufferFactory.cs" />
+    <Compile Include="Buffer\SimpleChunkManager.cs" />
+    <Compile Include="Communication\Channels\Database\BaseDatabaseChannel.cs" />
+    <Compile Include="Communication\Channels\Database\DatabaseChannelParameter.cs" />
+    <Compile Include="Communication\Channels\Database\Iso8583MessageToDatabaseSink.cs" />
+    <Compile Include="Communication\Channels\Database\MessageToDatabaseSink.cs" />
+    <Compile Include="Communication\Channels\Database\SqlDatabaseChannel.cs" />
+    <Compile Include="Communication\Channels\IChannelAddress.cs" />
+    <Compile Include="Communication\Channels\MessageToAddress.cs" />
+    <Compile Include="Communication\Channels\NamedChannelAddress.cs" />
+    <Compile Include="Communication\Channels\ReferenceChannelAddress.cs" />
+    <Compile Include="Communication\Channels\ServerChannelChildAddressChangedEventArgs.cs" />
+    <Compile Include="Communication\Channels\ServerChannelChildEventArgs.cs" />
+    <Compile Include="Communication\Channels\Sinks\Framing\FixedFrameLengthSink.cs" />
+    <Compile Include="Communication\Channels\Sinks\Framing\NboFrameLengthSink.cs" />
+    <Compile Include="Communication\Channels\Sinks\Framing\StringFrameLengthSink.cs" />
+    <Compile Include="Communication\Channels\Sinks\MessageFormatterSink.cs" />
+    <Compile Include="Communication\Channels\Sinks\ReconnectionSink.cs" />
+    <Compile Include="Communication\Channels\SocketConnectionRequestChannelEvent.cs" />
+    <Compile Include="Communication\Channels\Tcp\Ssl\FileBasedCertificateProvider.cs" />
+    <Compile Include="Communication\Channels\Tcp\Ssl\ICertificateProvider.cs" />
+    <Compile Include="Communication\Channels\Tcp\Ssl\ICertificateValidator.cs" />
+    <Compile Include="Communication\Channels\Tcp\Ssl\PublicKeyCertificateValidator.cs" />
+    <Compile Include="Communication\Channels\Tcp\Ssl\SslClientChannel.cs" />
+    <Compile Include="Communication\Channels\Tcp\Ssl\SslHelpers.cs" />
+    <Compile Include="Communication\Channels\Tcp\Ssl\SslServerChannel.cs" />
+    <Compile Include="Communication\Channels\Tcp\Ssl\SslServerChildChannel.cs" />
+    <Compile Include="Communication\Channels\Tcp\Ssl\KeyStoreCertificateProvider.cs" />
+    <Compile Include="Communication\Channels\Tcp\TcpBaseSenderReceiverChannel.cs" />
+    <Compile Include="Communication\Channels\Tcp\TcpClientChannel.cs" />
+    <Compile Include="Communication\Channels\Tcp\TcpServerChannel.cs" />
+    <Compile Include="Communication\Channels\Tcp\TcpServerChildChannel.cs" />
+    <Compile Include="Communication\Channels\ClonePipelineFactory.cs" />
+    <Compile Include="Communication\Channels\MessageRequest.cs" />
+    <Compile Include="Messaging\BaseMessageFormatter.cs" />
+    <Compile Include="Messaging\BcdDataEncoder.cs" />
+    <Compile Include="Messaging\BcdDataEncoderFactory.cs" />
+    <Compile Include="Messaging\BcdLengthEncoderFactory.cs" />
+    <Compile Include="Messaging\BinaryFieldFormatterFactory.cs" />
+    <Compile Include="Messaging\BitMapFieldFormatterFactory.cs" />
+    <Compile Include="Messaging\CardDataObfuscator.cs" />
+    <Compile Include="Messaging\DataEncoderFactory.cs" />
+    <Compile Include="Messaging\DeflateBinaryFieldFormatter.cs" />
+    <Compile Include="Messaging\DeflateBinaryFieldFormatterFactory.cs" />
+    <Compile Include="Messaging\DeflateStringFieldFormatter.cs" />
+    <Compile Include="Messaging\DataEncoder.cs" />
+    <Compile Include="Messaging\DeflateStringFieldFormatterFactory.cs" />
+    <Compile Include="Messaging\FieldFormatterFactory.cs" />
+    <Compile Include="Messaging\FieldsMessagesIdentifier.cs" />
+    <Compile Include="Messaging\FixedLengthManagerFactory.cs" />
+    <Compile Include="Messaging\FormatterDefinition.cs" />
+    <Compile Include="Messaging\GZipBinaryFieldFormatter.cs" />
+    <Compile Include="Messaging\GZipBinaryFieldFormatterFactory.cs" />
+    <Compile Include="Messaging\GZipStringFieldFormatter.cs" />
+    <Compile Include="Messaging\GZipStringFieldFormatterFactory.cs" />
+    <Compile Include="Messaging\HexDataEncoder.cs" />
+    <Compile Include="Messaging\HexDataEncoderFactory.cs" />
+    <Compile Include="Messaging\IDataEncoder.cs" />
+    <Compile Include="Messaging\IDataEncoderFactory.cs" />
+    <Compile Include="Messaging\IFieldObfuscator.cs" />
+    <Compile Include="Messaging\ILengthEncoderFactory.cs" />
+    <Compile Include="Messaging\ILengthManagerFactory.cs" />
+    <Compile Include="Messaging\Iso8583\Iso8583FormatterDefinition.cs" />
+    <Compile Include="Messaging\Iso8583\XmlIso8583MessageFormatter.cs" />
+    <Compile Include="Messaging\MessageSecuritySchema.cs" />
+    <Compile Include="Messaging\MessagingComponentXmlRenderConfig.cs" />
+    <Compile Include="Messaging\NumericValidatorFactory.cs" />
+    <Compile Include="Messaging\RestrictedLogField.cs" />
+    <Compile Include="Messaging\StringLengthEncoderFactory.cs" />
+    <Compile Include="Messaging\VariableLengthManagerFactory.cs" />
+    <Compile Include="Messaging\XmlMessageFormatter.cs" />
+    <Compile Include="Server\IProcessor.cs" />
+    <Compile Include="Server\Services\ChannelService.cs" />
+    <Compile Include="Server\Services\ChannelServiceServingPolicy.cs" />
+    <Compile Include="Server\Services\ClientChannelService.cs" />
+    <Compile Include="Server\Services\ServerChannelService.cs" />
+    <Compile Include="Server\Services\ProcessorService.cs" />
+    <Compile Include="Server\TrxServiceMessage.cs" />
+    <Compile Include="Utilities\Dom2Obj\Digester.cs" />
+    <Compile Include="Utilities\Dom2Obj\DigestContext.cs" />
+    <Compile Include="Utilities\Dom2Obj\InstrumentedMethod.cs" />
+    <Compile Include="Utilities\Dom2Obj\InstrumentedProperty.cs" />
+    <Compile Include="Utilities\IStringPaddingFactory.cs" />
+    <Compile Include="Messaging\IStringValidatorFactory.cs" />
+    <Compile Include="Messaging\StringFieldFormatterFactory.cs" />
+    <Compile Include="Server\Bootstrap.cs" />
+    <Compile Include="Server\FileBasedServicesProvider.cs" />
+    <Compile Include="Server\IServicesProvider.cs" />
+    <Compile Include="Exceptions\ConfigurationException.cs" />
+    <Compile Include="Server\ITrxServerTupleSpace.cs" />
+    <Compile Include="Server\TrxServerTupleSpaceProxy.cs" />
+    <Compile Include="Server\TrxServerTupleSpaceProvider.cs" />
+    <Compile Include="Server\TrxServerTupleSpace.cs" />
+    <Compile Include="Server\IStartable.cs" />
+    <Compile Include="Server\ITrxService.cs" />
+    <Compile Include="Server\TrxServer.cs" />
+    <Compile Include="Server\TrxServerHost.cs" />
+    <Compile Include="Server\TrxServerProxy.cs" />
+    <Compile Include="Server\TrxServiceBase.cs" />
+    <Compile Include="Server\TrxServiceException.cs" />
+    <Compile Include="Server\TrxServiceState.cs" />
+    <Compile Include="Server\WrappedObjectInTrxService.cs" />
+    <Compile Include="Communication\Channels\BaseChannel.cs" />
+    <Compile Include="Communication\Channels\BaseSenderReceiverChannel.cs" />
+    <Compile Include="Communication\Channels\ChannelEventType.cs" />
+    <Compile Include="Communication\Channels\ChannelRequestCtrl.cs" />
+    <Compile Include="Communication\Channels\ChannelException.cs" />
+    <Compile Include="Communication\Channels\ConnectionRequestChannelEvent.cs" />
+    <Compile Include="Communication\Channels\IChannel.cs" />
+    <Compile Include="Communication\Channels\ChannelEvent.cs" />
+    <Compile Include="Communication\Channels\IMessagesIdentifier.cs" />
+    <Compile Include="Communication\Channels\IPipelineFactory.cs" />
+    <Compile Include="Communication\Channels\IClientChannel.cs" />
+    <Compile Include="Communication\Channels\IReceiverChannel.cs" />
+    <Compile Include="Communication\Channels\ISenderChannel.cs" />
+    <Compile Include="Communication\Channels\IServerChannel.cs" />
+    <Compile Include="Communication\Channels\BaseServerChannel.cs" />
+    <Compile Include="Communication\Channels\ISink.cs" />
+    <Compile Include="Communication\Channels\Local\LocalBaseSenderReceiverChannel.cs" />
+    <Compile Include="Communication\Channels\Local\LocalClientChannel.cs" />
+    <Compile Include="Communication\Channels\Local\LocalServerChannel.cs" />
+    <Compile Include="Communication\Channels\Local\LocalServerChildChannel.cs" />
+    <Compile Include="Communication\Channels\Local\LocalServerRegistry.cs" />
+    <Compile Include="Communication\Channels\Pipeline.cs" />
+    <Compile Include="Communication\Channels\PipelineContext.cs" />
+    <Compile Include="Communication\Channels\IServerChildChannel.cs" />
+    <Compile Include="Communication\Channels\ReceiveDescriptor.cs" />
+    <Compile Include="Communication\Channels\Request.cs" />
+    <Compile Include="Communication\Channels\SendRequestHandlerCtrl.cs" />
+    <Compile Include="Coordination\TupleSpace\ContextFactory.cs" />
+    <Compile Include="Coordination\TupleSpace\HeapQueueContext.cs" />
+    <Compile Include="Coordination\TupleSpace\HeapQueueContextFactory.cs" />
+    <Compile Include="Coordination\TupleSpace\IContext.cs" />
+    <Compile Include="Coordination\TupleSpace\IContextualTupleSpace.cs" />
+    <Compile Include="Coordination\TupleSpace\ITupleSpace.cs" />
+    <Compile Include="Coordination\TupleSpace\TupleSpace.cs" />
+    <Compile Include="Exceptions\BugException.cs" />
+    <Compile Include="Logging\BaseLogger.cs" />
+    <Compile Include="Logging\DummyLogger.cs" />
+    <Compile Include="Logging\DummyLoggerFactory.cs" />
+    <Compile Include="Logging\ILogger.cs" />
+    <Compile Include="Logging\IRenderable.cs" />
+    <Compile Include="Logging\IRenderer.cs" />
+    <Compile Include="Logging\IXmlRenderable.cs" />
+    <Compile Include="Logging\Log4NetLogger.cs" />
+    <Compile Include="Logging\Log4NetLoggerFactory.cs" />
+    <Compile Include="Logging\LoggerFactory.cs" />
+    <Compile Include="Logging\LogLevel.cs" />
+    <Compile Include="Logging\LogManager.cs" />
+    <Compile Include="Logging\LogUnit.cs" />
+    <Compile Include="Logging\Renderer.cs" />
+    <Compile Include="Logging\XmlRenderer.cs" />
+    <Compile Include="Messaging\BasicMessageFormatter.cs" />
+    <Compile Include="Messaging\BcdLengthEncoder.cs" />
+    <Compile Include="Messaging\BinaryField.cs" />
+    <Compile Include="Messaging\BinaryFieldFormatter.cs" />
+    <Compile Include="Messaging\BitMapField.cs" />
+    <Compile Include="Messaging\BitMapFieldFormatter.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\BinaryConstantExpression.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\ConditionalAndOperator.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\ConditionalFieldFormatter.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\ConditionalOrOperator.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\EqualityEqualsOperator.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\ExpressionCompileException.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\ExpressionEvaluationException.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\FieldValueEqualsBinaryOperator.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\FieldValueEqualsStringOperator.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\IBooleanExpression.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\IConditionalFieldEvaluator.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\IMessageExpression.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\IsSetExpression.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\IValueExpression.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\LexicalAnalyzer.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\MessageExpression.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\MidEqualsBinaryOperator.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\MidEqualsStringOperator.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\MtiEqualsExpression.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\NegationOperator.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\ParentMessageExpression.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\SemanticParser.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\StringConstantExpression.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\SubMessageExpression.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\Tokenizer.cs" />
+    <Compile Include="Messaging\ConditionalFormatting\Yytoken.cs" />
+    <Compile Include="Messaging\Field.cs" />
+    <Compile Include="Messaging\FieldAttribute.cs" />
+    <Compile Include="Messaging\FieldCollection.cs" />
+    <Compile Include="Messaging\FieldFormatter.cs" />
+    <Compile Include="Messaging\FieldFormatterCollection.cs" />
+    <Compile Include="Messaging\FieldFormatterEventArgs.cs" />
+    <Compile Include="Messaging\FieldValidationException.cs" />
+    <Compile Include="Messaging\FixedLengthManager.cs" />
+    <Compile Include="Messaging\FormatterContext.cs" />
+    <Compile Include="Messaging\ILengthEncoder.cs" />
+    <Compile Include="Messaging\IMessageFormatter.cs" />
+    <Compile Include="Messaging\IMessageHeaderFormatter.cs" />
+    <Compile Include="Messaging\InnerMessageField.cs" />
+    <Compile Include="Messaging\InnerMessageFieldFormatter.cs" />
+    <Compile Include="Messaging\ISelfAnnouncedFieldFormatter.cs" />
+    <Compile Include="Messaging\Iso8583\Iso8583Message.cs" />
+    <Compile Include="Messaging\Iso8583\Iso8583MessageFormatter.cs" />
+    <Compile Include="Messaging\IStringConverter.cs" />
+    <Compile Include="Messaging\IStringValidator.cs" />
+    <Compile Include="Messaging\LengthManager.cs" />
+    <Compile Include="Messaging\Message.cs" />
+    <Compile Include="Messaging\MessageHeader.cs" />
+    <Compile Include="Messaging\MessagingComponent.cs" />
+    <Compile Include="Messaging\MessagingException.cs" />
+    <Compile Include="Messaging\NboLengthEncoder.cs" />
+    <Compile Include="Messaging\NumericValidator.cs" />
+    <Compile Include="Messaging\ParserContext.cs" />
+    <Compile Include="Messaging\SelfAnnouncedBinaryFieldFormatter.cs" />
+    <Compile Include="Messaging\SelfAnnouncedFieldNumberManager.cs" />
+    <Compile Include="Messaging\SelfAnnouncedMarkerManager.cs" />
+    <Compile Include="Messaging\SelfAnnouncedStringFieldFormatter.cs" />
+    <Compile Include="Messaging\StringField.cs" />
+    <Compile Include="Messaging\StringFieldFormatter.cs" />
+    <Compile Include="Messaging\StringLengthEncoder.cs" />
+    <Compile Include="Messaging\StringMessageHeader.cs" />
+    <Compile Include="Messaging\StringMessageHeaderFormatter.cs" />
+    <Compile Include="Messaging\UpToEndLengthManager.cs" />
+    <Compile Include="Messaging\VariableLengthManager.cs" />
+    <Compile Include="Messaging\VolatileStanSequencer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\BufferDumpConfig.cs" />
+    <Compile Include="Utilities\Dom2Obj\InstantiationContext.cs" />
+    <Compile Include="Utilities\Dom2Obj\XmlNodeInformation.cs" />
+    <Compile Include="Utilities\FrameworkEncoding.cs" />
+    <Compile Include="Utilities\PerformanceTimer.cs" />
+    <Compile Include="Utilities\ISequencer.cs" />
+    <Compile Include="Utilities\IStringPadding.cs" />
+    <Compile Include="Utilities\NetUtilities.cs" />
+    <Compile Include="Utilities\SpacePaddingLeft.cs" />
+    <Compile Include="Utilities\SpacePaddingRight.cs" />
+    <Compile Include="Utilities\StringPaddingLeft.cs" />
+    <Compile Include="Utilities\StringPaddingRight.cs" />
+    <Compile Include="Utilities\StringUtilities.cs" />
+    <Compile Include="Utilities\ExpiryManager.cs" />
+    <Compile Include="Utilities\VolatileSequencer.cs" />
+    <Compile Include="Utilities\ZeroPaddingLeft.cs" />
+    <Compile Include="Utilities\ZeroPaddingLeftFactory.cs" />
+    <Compile Include="Utilities\ZeroPaddingRight.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Trx.dll.log4net">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Trx.snk" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

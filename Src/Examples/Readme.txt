@@ -1,0 +1,1 @@
+The examples Acquirer and Merchant are designed to work together. Merchant tries to connect to Acquirer and it begins to send messages.
